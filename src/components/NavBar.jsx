@@ -12,8 +12,11 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
-const pages = ['Products', 'Pricing', 'Blog'];
+
+const pages = ['About', 'Projects', 'Contact'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
@@ -31,7 +34,20 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      window.location.href = "/login"; // or use React Router's navigate("/login")
+    }
+    else {
+    console.error("Error signing out:", error.message);}
+    };
+
   const handleCloseUserMenu = () => {
+    // Handle user menu close
+    // For example, you can redirect to the profile page or perform other actions
+    // Here we just close the menu
+    handleLogout();
     setAnchorElUser(null);
   };
 
@@ -87,7 +103,15 @@ function ResponsiveAppBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  {/* <Typography sx={{ textAlign: 'center' }}>{page}</Typography> */}
+                  <Button
+                    key={page}
+                    component={Link}
+                    to={'/' + page.toLowerCase()}
+                    sx={{ textAlign: 'center' }}
+                  >
+                    {page}
+                  </Button>
                 </MenuItem>
               ))}
             </Menu>
@@ -115,6 +139,8 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
+                component={Link}
+                to={'/' + page.toLowerCase()}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
